@@ -8,7 +8,7 @@ import numpy as np
 from ultralytics import YOLO
 
 from ptcg_api.catalog import load_catalogs, match_catalog
-from ptcg_api.encode import bgr_to_jpeg_b64, decode_image, quad_to_list
+from ptcg_api.encode import bgr_to_jpeg_b64, decode_image, quad_norm, quad_to_list
 from ptcg_api.paths import ROOT, SRC  # noqa: F401
 from ptcg_api.roi import orient_printed_up
 
@@ -164,6 +164,7 @@ class Scanner:
                         }
                     )
                 best = matches[0] if matches else None
+                crop_h, crop_w = orient_bgr.shape[:2]
                 payload = {
                     "index": order,
                     "det_conf": round(float(card.conf), 3),
@@ -180,6 +181,8 @@ class Scanner:
                             "conf": round(float(region.conf), 3),
                             "ocr_conf": round(float(region.ocr_conf), 3),
                             "text": region.text or getattr(read, field, ""),
+                            "raw": region.raw or "",
+                            "quad": quad_norm(region.quad, crop_w, crop_h),
                         }
                         for field, region in read.regions.items()
                     },

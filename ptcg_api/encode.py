@@ -26,3 +26,12 @@ def bgr_to_jpeg_b64(bgr: np.ndarray, quality: int = 75) -> str:
 def quad_to_list(quad: np.ndarray) -> list[list[float]]:
     pts = np.asarray(quad, dtype=np.float32).reshape(-1, 2)
     return [[round(float(x), 2), round(float(y), 2)] for x, y in pts]
+
+
+def quad_norm(quad: np.ndarray | None, width: int, height: int) -> list[list[float]]:
+    if quad is None:
+        return []
+    w = max(float(width), 1.0)
+    h = max(float(height), 1.0)
+    pts = np.asarray(quad, dtype=np.float32).reshape(-1, 2)
+    return [[round(float(x) / w, 4), round(float(y) / h, 4)] for x, y in pts]

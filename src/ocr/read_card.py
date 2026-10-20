@@ -67,6 +67,7 @@ class Region:
     conf: float
     quad: np.ndarray
     text: str = ""
+    raw: str = ""
     source: str = "det"
     ocr_conf: float = 0.0
 
@@ -479,16 +480,17 @@ def _easy_ocr_image(reader, enhanced: np.ndarray, field: str) -> tuple[str, floa
     return "", max(conf, 0.0), enhanced
 
 
-def ocr_image(reader, image: np.ndarray, field: str = "name") -> tuple[str, float, np.ndarray]:
+def ocr_image(reader, image: np.ndarray, field: str = "name") -> tuple[str, float, np.ndarray, str]:
     min_h = 80 if field == "collection" else 112
     enhanced = enhance_strip(image, min_h=min_h)
     if hasattr(reader, "readtext"):
-        return _easy_ocr_image(reader, enhanced, field)
+        text, conf, view = _easy_ocr_image(reader, enhanced, field)
+        return text, conf, view, text
     if hasattr(reader, "read_field"):
         raw, conf = reader.read_field(enhanced, field)
     else:
         raw, conf = _rapid_raw(reader, enhanced)
-    return _clean(field, raw), conf, enhanced
+    return _clean(field, raw), conf, enhanced, raw
 
 
 def regions_from_obb(result, image: np.ndarray | None = None, conf_min: float = 0.25) -> dict[str, Region]:
@@ -546,9 +548,10 @@ def read_card(result, reader, image: np.ndarray | None = None, conf_min: float =
         region = regions[field_name]
         if field_name == "collection" and region.source == "template":
             continue
-        text, ocr_conf, view = ocr_image(reader, region.image, field=field_name)
+        text, ocr_conf, view, raw = ocr_image(reader, region.image, field=field_name)
         region.image = view
         region.text = text
+        region.raw = raw
         region.ocr_conf = ocr_conf
         setattr(out, field_name, text)
     return out

@@ -27,6 +27,8 @@ class RoiBandOut(BaseModel):
     conf: float
     ocr_conf: float = 0.0
     text: str = ""
+    raw: str = ""
+    quad: list[list[float]] = Field(default_factory=list)
 
 
 class OcrOut(BaseModel):
