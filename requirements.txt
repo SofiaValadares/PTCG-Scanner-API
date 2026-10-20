@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic-settings
+python-dotenv
+ultralytics
+opencv-python-headless
+numpy
+pandas
+pillow
+rapidocr
+onnx
+
+# GPU (this machine):
+#   python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+# CPU / Docker:
+#   python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu

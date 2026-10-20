@@ -1,0 +1,25 @@
+# Notices
+
+## Authorship
+
+PTCG Scanner API — inference HTTP service for the bachelor's thesis **PTCG Scanner**.
+Copyright (c) 2026 Sofia Valadares. License: [CC BY-NC 4.0](LICENSE).
+
+The detector, ROI, cropper, OCR, and catalog logic originate from the thesis repository. This repo only serves them over HTTP.
+
+## Third-party trademarks
+
+This project is **not** affiliated with, associated with, authorized, or endorsed by Nintendo, The Pokémon Company, Creatures Inc., GAME FREAK, or any other owner of Pokémon / Pokémon Trading Card Game marks. Names, images, and card lists are used for academic research only. Rights remain with their owners.
+
+## Third-party software
+
+This repository uses libraries under their own licenses, including:
+
+- Ultralytics YOLO
+- RapidOCR
+- OpenCV
+- FastAPI / Uvicorn
+- PyTorch
+- pandas, Pillow, and the rest of `requirements.txt`
+
+Those packages are **not** relicensed as CC BY-NC 4.0.

@@ -1,0 +1,13 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DEVICE: cpu
+      HOST: 0.0.0.0
+      PORT: 8000
+    # Uncomment to persist nothing extra; models are baked into the image.
+    # volumes:
+    #   - ./models:/app/models:ro
+    #   - ./data:/app/data:ro

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ptcg-scanner-api"
+version = "0.1.0"
+description = "HTTP API for PTCG Scanner: detect, crop, OCR, and catalog-match Pokémon TCG cards."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "CC-BY-NC-4.0" }
+authors = [{ name = "Sofia Valadares", email = "sofiav.cav@gmail.com" }]
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "python-multipart",
+    "pydantic-settings",
+    "python-dotenv",
+    "ultralytics",
+    "opencv-python-headless",
+    "numpy",
+    "pandas",
+    "pillow",
+    "rapidocr",
+    "onnx",
+]
+
+[project.scripts]
+ptcg-api = "app.main:run"
+
+[tool.setuptools.packages.find]
+include = ["app*", "ptcg_api*"]
