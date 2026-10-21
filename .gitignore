@@ -15,8 +15,10 @@ build/
 output/
 uploads/
 
-# Keep production weights (override a global *.pt ignore if present)
-!models/*.pt
+# Pesos .pt ficam só na máquina (copie do TCC ou aponte para ele) — não sobem no GitHub
+*.pt
+*.onnx
+*.engine
 
 Thumbs.db
 Desktop.ini

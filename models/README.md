@@ -9,4 +9,4 @@ Pesos de produção (os mesmos do repo do TCC):
 
 Não há `.pt` de OCR. RapidOCR traz o ONNX no pip.
 
-Para atualizar: copie `models/*.pt` do repositório **TCGTradeSegmentacao**.
+**Não commite os `.pt`.** A API procura primeiro em `models/` desta pasta; se não achar, usa os do TCC irmão (`../TCGTradeSegmentacao/models/`). Para ter uma cópia local: copie `obb-v6.pt` e `ocr-roi-v3.pt` do TCC.

@@ -15,6 +15,17 @@ def repo_root() -> Path:
 
 
 ROOT = repo_root()
+_TCC_MODELS = ROOT.parent / "TCGTradeSegmentacao" / "models"
+
+
+def _weight(name: str) -> Path:
+    local = ROOT / "models" / name
+    if local.is_file():
+        return local
+    sibling = _TCC_MODELS / name
+    if sibling.is_file():
+        return sibling
+    return local
 
 
 class Settings(BaseSettings):
@@ -28,8 +39,8 @@ class Settings(BaseSettings):
     port: int = 8000
     cors_origins: str = "*"
 
-    detector_weights: Path = ROOT / "models" / "obb-v6.pt"
-    roi_weights: Path = ROOT / "models" / "ocr-roi-v3.pt"
+    detector_weights: Path = _weight("obb-v6.pt")
+    roi_weights: Path = _weight("ocr-roi-v3.pt")
     catalog_dir: Path = ROOT / "data" / "catalog"
     catalog_lang: str = "en"
 

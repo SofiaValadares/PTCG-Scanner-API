@@ -142,7 +142,7 @@ GPU no Docker exige imagem NVIDIA; no TCC o caminho simples é o PC local.
 | `models/obb-v6.pt` | Detector de carta (YOLOv26s-OBB, imgsz 960) |
 | `models/ocr-roi-v3.pt` | Faixas name / number / colection (imgsz 800) |
 
-OCR não tem `.pt` nosso: RapidOCR (ONNX no pacote). Atualizar pesos: copie de novo do repo do TCC (`models/`).
+OCR não tem `.pt` nosso: RapidOCR (ONNX no pacote). Os `.pt` **não sobem no GitHub**. A API lê `models/` desta pasta ou, se vazio, `../TCGTradeSegmentacao/models/`.
 
 ---
 

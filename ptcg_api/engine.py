@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-from ptcg_api.catalog import load_catalogs, match_catalog
+from ptcg_api.catalog import has_collector_number, load_catalogs, match_catalog
 from ptcg_api.encode import bgr_to_jpeg_b64, decode_image, quad_norm, quad_to_list
 from ptcg_api.paths import ROOT, SRC  # noqa: F401
 from ptcg_api.roi import orient_printed_up
@@ -142,27 +142,32 @@ class Scanner:
                     self.roi_model, orig_bgr, self.roi_conf, self.device
                 )
                 read = read_card(roi, self.reader, image=orient_bgr, conf_min=self.roi_conf)
-                ranked = match_catalog(
-                    read.name,
-                    read.number,
-                    read.collection,
-                    self.catalog,
-                    set_id=set_id,
-                    top_n=n,
+                ranked = (
+                    match_catalog(
+                        read.name,
+                        read.number,
+                        read.collection,
+                        self.catalog,
+                        set_id=set_id,
+                        top_n=n,
+                    )
+                    if has_collector_number(read.number)
+                    else None
                 )
                 matches = []
-                for _, row in ranked.iterrows():
-                    matches.append(
-                        {
-                            "name": str(row["name"]),
-                            "number": str(row["number"]),
-                            "set_id": str(row["set_id"]),
-                            "set_name": str(row["set_name"]),
-                            "rarity": str(row.get("rarity") or ""),
-                            "lang": str(row.get("lang") or ""),
-                            "score": round(float(row["score"]), 3),
-                        }
-                    )
+                if ranked is not None:
+                    for _, row in ranked.iterrows():
+                        matches.append(
+                            {
+                                "name": str(row["name"]),
+                                "number": str(row["number"]),
+                                "set_id": str(row["set_id"]),
+                                "set_name": str(row["set_name"]),
+                                "rarity": str(row.get("rarity") or ""),
+                                "lang": str(row.get("lang") or ""),
+                                "score": round(float(row["score"]), 3),
+                            }
+                        )
                 best = matches[0] if matches else None
                 crop_h, crop_w = orient_bgr.shape[:2]
                 payload = {

@@ -49,6 +49,18 @@ def parse_number(text: str) -> tuple[int | None, int | None]:
     return None, None
 
 
+def has_collector_number(ocr_number: str) -> bool:
+    """Só tenta o catálogo se o OCR leu um número de colecionador."""
+    collector, _total = parse_number(ocr_number)
+    return collector is not None
+
+
+def _empty_matches() -> pd.DataFrame:
+    return pd.DataFrame(
+        columns=["name", "number", "set_id", "set_name", "rarity", "lang", "score"]
+    )
+
+
 def load_catalog(csv_path: Path, sets_path: Path) -> pd.DataFrame:
     raw = pd.read_csv(csv_path)
     cols = {c.lower(): c for c in raw.columns}
@@ -207,6 +219,8 @@ def match_catalog(
     name_w, name_exact = 1000.0, 40.0
     number_w, number_near, total_w, set_w = 50.0, 15.0, 25.0, 10.0
     collector, total = parse_number(ocr_number)
+    if collector is None:
+        return _empty_matches()
     query = fold(ocr_name)
     collection_ids = set()
     if set_id:
@@ -229,11 +243,11 @@ def match_catalog(
         near_cat = names if query else catalog
         near = near_cat["collector"].notna() & (near_cat["collector"] - collector).abs().le(2)
         parts.append(near_cat.loc[near])
-    if not parts and collection_ids:
-        parts.append(catalog.loc[catalog["set_id"].isin(collection_ids)])
-    pool = catalog if not parts else pd.concat(parts).drop_duplicates()
+    if not parts:
+        return _empty_matches()
+    pool = pd.concat(parts).drop_duplicates()
     if pool.empty:
-        pool = catalog
+        return _empty_matches()
 
     scored = pool.copy()
     scores = np.zeros(len(scored), dtype=np.float32)
